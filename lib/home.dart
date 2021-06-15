@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:booktron/cadastro_contato.dart';
+import 'package:booktron/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -20,8 +22,8 @@ class _HomeState extends State<Home> {
     contatoInscricao?.cancel();
 
     contatoInscricao = db
-        .collection('Contatos')
-        .orderBy('Nome', descending: false)
+        .collection('contatos')
+        .orderBy('nome', descending: false)
         .snapshots()
         .listen((snapshot) {
       final List<Contato> contatos = snapshot.docs
@@ -62,11 +64,14 @@ class _HomeState extends State<Home> {
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
-                      enabled: contatos[index].ativo,
-                      leading: Image.file(contatos[index].imagem,
+                      leading: Image.asset(contatos[index].foto,
                           width: 80, height: 80),
                       trailing: Row(
-                        children: [],
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.phone),
+                              onPressed: () {/* Criar o método */})
+                        ],
                       ),
                       title: Text(contatos[index].nome),
                       onTap: () => Navigator.push(

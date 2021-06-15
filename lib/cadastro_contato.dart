@@ -1,5 +1,8 @@
+import 'package:booktron/components.dart';
+import 'package:booktron/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class CadastroContato extends StatefulWidget {
   final Contato contato;
@@ -18,22 +21,22 @@ class _CadastroContatoState extends State<CadastroContato> {
   TextEditingController _controladorNome;
   TextEditingController _controladorTelefone;
   TextEditingController _controladorApelido;
-  TextEditingController _controladorImagem;
+  TextEditingController _controladorFoto;
 
   @override
   void initState() {
     super.initState();
     if (widget.contato != null) {
       _controladorNome = TextEditingController(text: widget.contato.nome);
-      _controladorTelefone =
-          TextEditingController(text: widget.contato.telefone);
+      _controladorTelefone = MaskedTextController(
+          mask: '(00) 00000-0000', text: widget.contato.telefone);
       _controladorApelido = TextEditingController(text: widget.contato.apelido);
-      _controladorImagem = TextEditingController(text: widget.contato.Imagem);
+      _controladorFoto = TextEditingController(text: widget.contato.foto);
     } else {
       _controladorNome = TextEditingController();
-      _controladorTelefone = TextEditingController();
+      _controladorTelefone = MaskedTextController(mask: '(00) 00000-0000');
       _controladorApelido = TextEditingController();
-      _controladorImagem = TextEditingController();
+      _controladorFoto = TextEditingController();
     }
   }
 
@@ -41,7 +44,7 @@ class _CadastroContatoState extends State<CadastroContato> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produto'),
+        title: Text('Contatos'),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -53,14 +56,14 @@ class _CadastroContatoState extends State<CadastroContato> {
               children: <Widget>[
                 InputText(
                   controlador: _controladorNome,
-                  titulo: 'Nome do Produto*',
-                  dica: 'Digite o produto',
+                  titulo: 'Nome',
+                  dica: 'Digite seu Nome',
                   validador: Validadores.validaObrigatorio,
                 ),
                 InputText(
                   controlador: _controladorTelefone,
-                  titulo: 'Preço*',
-                  dica: '2.50 (use ponto ao invés de virgula',
+                  titulo: 'Telefone',
+                  dica: '(99)99999-9999',
                   numerico: true,
                   validador: Validadores.validaObrigatorio,
                 ),
@@ -76,24 +79,7 @@ class _CadastroContatoState extends State<CadastroContato> {
                   child: TextFormField(
                     autofocus: true,
                     maxLines: 2,
-                    validator: Validadores.validaObrigatorio,
-                    controller: _controladorDescricao,
-                    style: TextStyle(fontSize: 18, color: Colors.red),
-                    decoration: InputDecoration(
-                      labelText: 'Descrição*',
-                      labelStyle: TextStyle(fontSize: 18, color: Colors.red),
-                      hintText: 'Descreva o prato',
-                      hintStyle: TextStyle(color: Colors.red[100]),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 16.0),
-                  child: TextFormField(
-                    autofocus: true,
-                    maxLines: 2,
-                    controller: _controladorImagem,
+                    controller: _controladorFoto,
                     style: TextStyle(fontSize: 18, color: Colors.red),
                     decoration: InputDecoration(
                       labelText: 'Imagem do prato',
@@ -118,38 +104,29 @@ class _CadastroContatoState extends State<CadastroContato> {
   }
 
   void _cadastrar() {
-    final String nomeProduto = _controladorNome.text;
-    final String preco = _controladorTelefone.text;
-    final String categoriaProduto = _controladorApelido.text;
-    final String descricao = _controladorDescricao.text;
-    final String linkImagemProduto = _controladorImagem.text;
-    final bool ativo = true;
-
-    Produto produto;
+    final String nome = _controladorNome.text;
+    final String telefone = _controladorTelefone.text;
+    final String apelido = _controladorApelido.text;
+    final String foto = _controladorFoto.text;
 
     if (_formkey.currentState.validate()) {
-      produto = Produto(
-        ativo: ativo,
-        categoriaProduto: categoriaProduto,
-        descricao: descricao,
-        linkImagemProduto: linkImagemProduto,
-        nomeProduto: nomeProduto,
-        preco: preco,
+      Contato contato = Contato(
+        apelido: apelido,
+        foto: foto,
+        nome: nome,
+        telefone: telefone,
       );
 
-      if (widget.contato != null) {
-        ProdutoDao.getAtualizaProduto(
-            widget.contato.idProduto, produto, widget.comercio);
-        Navigator.pop(context);
-      } else {
-        print('NULO');
-        ProdutoDao.getAddProduto(produto, widget.comercio);
-        Navigator.pop(context);
-      }
+      db.collection('contatos').add({
+        'foto': contato.foto,
+        'nome': contato.nome,
+        'telefone': contato.telefone,
+        'apelido': contato.apelido
+      });
     } else {
-      ShowDialog.showMyDialog(
+      /* ShowDialog.showMyDialog(
           context, 'Dados faltando', 'Complete todo o cadastro', '',
-          onClick: () => Navigator.pop(context));
+          onClick: () => Navigator.pop(context)); */
     }
   }
 }
