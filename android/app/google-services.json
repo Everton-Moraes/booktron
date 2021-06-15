@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "285919915660",
+    "project_id": "booktron-74326",
+    "storage_bucket": "booktron-74326.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285919915660:android:c8a9460eff5ea31e0015a9",
+        "android_client_info": {
+          "package_name": "com.example.booktron"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285919915660-cnd1g0hvhju55q3h54vd09er38hv2sgq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFmDDC-KJyAK8HXew-oTmYVGNVZlrsIYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285919915660-cnd1g0hvhju55q3h54vd09er38hv2sgq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
