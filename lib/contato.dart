@@ -7,8 +7,8 @@ class Contato {
 
   Contato({this.foto, this.nome, this.telefone, this.apelido});
 
-  Contato.fromJson(Map<String, dynamic> json, String idContato) {
-    idContato = idContato ?? '';
+  Contato.fromJson(Map<String, dynamic> json, String id) {
+    idContato = id ?? '';
     foto = json['foto'];
     nome = json['nome'];
     telefone = json['telefone'];
