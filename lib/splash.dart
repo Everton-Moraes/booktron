@@ -28,17 +28,19 @@ class _SplashState extends State<Splash> {
           width: double.infinity,
           child: Stack(
             children: <Widget>[
-              /*  Center(
-                child: Image.asset(
-                  'assets/logo_inicio.png',
-                ),
-              ), */
               Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                  strokeWidth: 8,
+                child: Image.asset(
+                  'assets/logo.png',
                 ),
               ),
+              Center(
+                  child: Text(
+                'BookTron',
+                style: TextStyle(
+                  fontSize: 70,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
             ],
           ),
         ),

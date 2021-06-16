@@ -85,52 +85,63 @@ class _HomeState extends State<Home> {
                 child: CircularProgressIndicator(),
               );
             default:
-              List<DocumentSnapshot> documentos = snapshot.data.docs;
-              return ListView.builder(
-                itemCount: contatos.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CadastroContato(
-                                    contato: contatos[index],
-                                  ))),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(contatos[index].apelido,
-                                    style: TextStyle(fontSize: 18.0)),
-                                Container(
-                                  child: Row(
-                                    children: [
-                                      IconButton(
-                                          icon: Icon(Icons.phone_android),
-                                          onPressed: () {}),
-                                      IconButton(
-                                          icon: Icon(Icons.phone_android),
-                                          onPressed: () {}),
-                                      IconButton(
-                                          icon: Icon(Icons.phone_android),
-                                          onPressed: () {}),
-                                    ],
+              print('NUM ------> ${contatos.length}');
+              if (contatos.isNotEmpty) {
+                return ListView.builder(
+                  itemCount: contatos.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CadastroContato(
+                                      contato: contatos[index],
+                                    ))),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(contatos[index].apelido,
+                                      style: TextStyle(fontSize: 18.0)),
+                                  Container(
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                            icon: Icon(Icons.phone_android),
+                                            onPressed: () {}),
+                                        IconButton(
+                                            icon: Icon(Icons.phone_android),
+                                            onPressed: () {}),
+                                        IconButton(
+                                            icon: Icon(Icons.phone_android),
+                                            onPressed: () {}),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              );
+                    );
+                  },
+                );
+              } else {
+                return Container(
+                    height: 380,
+                    child: Center(
+                        child: Text(
+                      'Lista Vazia',
+                      style: TextStyle(fontSize: 24),
+                    )));
+              }
           }
         },
       ),
