@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
 
     contatoInscricao = db
         .collection('contatos')
-        .orderBy('nome', descending: false)
+        .orderBy('apelido', descending: false)
         .snapshots()
         .listen((snapshot) {
       final List<Contato> contatos = snapshot.docs
@@ -120,7 +120,7 @@ class _HomeState extends State<Home> {
   Stream<QuerySnapshot> getListaContatos() {
     return db
         .collection('contatos')
-        .orderBy('nome', descending: false)
+        .orderBy('apelido', descending: false)
         .snapshots();
   }
 }
