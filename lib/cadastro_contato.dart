@@ -100,13 +100,21 @@ class _CadastroContatoState extends State<CadastroContato> {
         nome: nome,
         telefone: telefone,
       );
-
-      db.collection('contatos').add({
-        'foto': contato.foto,
-        'nome': contato.nome,
-        'telefone': contato.telefone,
-        'apelido': contato.apelido
-      });
+      if (widget.contato == null) {
+        db.collection('contatos').add({
+          'foto': contato.foto,
+          'nome': contato.nome,
+          'telefone': contato.telefone,
+          'apelido': contato.apelido
+        });
+      } else {
+        db.collection('contatos').doc(widget.contato.idContato).update({
+          'foto': contato.foto,
+          'nome': contato.nome,
+          'telefone': contato.telefone,
+          'apelido': contato.apelido
+        });
+      }
       Navigator.pop(context);
     } else {
       /* ShowDialog.showMyDialog(

@@ -63,22 +63,44 @@ class _HomeState extends State<Home> {
               return ListView.builder(
                 itemCount: documentos.length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      /*  leading: Image.asset(contatos[index].foto,
-                          width: 80, height: 80),
-                       trailing: Row(
-                        children: [
-                          IconButton(
-                              icon: Icon(Icons.phone),
-                              onPressed: () {/* Criar o método */})
-                        ],
-                      ), */
-                      title: Text(contatos[index].nome),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CadastroContato())),
+                              builder: (context) => CadastroContato(
+                                    contato: contatos[index],
+                                  ))),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(contatos[index].apelido,
+                                    style: TextStyle(fontSize: 18.0)),
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      IconButton(
+                                          icon: Icon(Icons.phone_android),
+                                          onPressed: () {}),
+                                      IconButton(
+                                          icon: Icon(Icons.phone_android),
+                                          onPressed: () {}),
+                                      IconButton(
+                                          icon: Icon(Icons.phone_android),
+                                          onPressed: () {}),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -96,9 +118,9 @@ class _HomeState extends State<Home> {
   }
 
   Stream<QuerySnapshot> getListaContatos() {
-    return FirebaseFirestore.instance
+    return db
         .collection('contatos')
-        .orderBy('Nome', descending: false)
+        .orderBy('nome', descending: false)
         .snapshots();
   }
 }

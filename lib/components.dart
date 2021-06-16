@@ -25,12 +25,12 @@ class InputText extends StatelessWidget {
         controller: controlador,
         keyboardType:
             numerico != null ? TextInputType.number : TextInputType.text,
-        style: TextStyle(fontSize: 18, color: Colors.red),
+        style: TextStyle(fontSize: 18, color: Colors.blue),
         decoration: InputDecoration(
           labelText: titulo,
-          labelStyle: TextStyle(fontSize: 18, color: Colors.red),
+          labelStyle: TextStyle(fontSize: 18, color: Colors.blue),
           hintText: dica,
-          hintStyle: TextStyle(color: Colors.red[100]),
+          hintStyle: TextStyle(color: Colors.blue[100]),
         ),
       ),
     );
@@ -61,7 +61,7 @@ class Botao extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.red),
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
           textStyle: MaterialStateProperty.all(TextStyle(fontSize: 24)),
           shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
