@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
         title: Text('Criar um pesquisar'),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: getListaProdutos(),
+        stream: getListaContatos(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -59,20 +59,21 @@ class _HomeState extends State<Home> {
               );
             default:
               List<DocumentSnapshot> documentos = snapshot.data.docs;
+              print('AQUI ESTÀ DOC: ${documentos.length}');
               return ListView.builder(
                 itemCount: documentos.length,
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
-                      leading: Image.asset(contatos[index].foto,
+                      /*  leading: Image.asset(contatos[index].foto,
                           width: 80, height: 80),
-                      trailing: Row(
+                       trailing: Row(
                         children: [
                           IconButton(
                               icon: Icon(Icons.phone),
                               onPressed: () {/* Criar o método */})
                         ],
-                      ),
+                      ), */
                       title: Text(contatos[index].nome),
                       onTap: () => Navigator.push(
                           context,
@@ -87,16 +88,16 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
         onPressed: () => Navigator.push(context,
             MaterialPageRoute(builder: (context) => CadastroContato())),
       ),
     );
   }
 
-  Stream<QuerySnapshot> getListaProdutos() {
+  Stream<QuerySnapshot> getListaContatos() {
     return FirebaseFirestore.instance
-        .collection('Contatos')
+        .collection('contatos')
         .orderBy('Nome', descending: false)
         .snapshots();
   }

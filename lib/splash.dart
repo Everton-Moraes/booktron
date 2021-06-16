@@ -28,11 +28,11 @@ class _SplashState extends State<Splash> {
           width: double.infinity,
           child: Stack(
             children: <Widget>[
-              Center(
+              /*  Center(
                 child: Image.asset(
                   'assets/logo_inicio.png',
                 ),
-              ),
+              ), */
               Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.red),

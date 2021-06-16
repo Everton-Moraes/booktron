@@ -69,25 +69,9 @@ class _CadastroContatoState extends State<CadastroContato> {
                 ),
                 InputText(
                   controlador: _controladorApelido,
-                  titulo: 'Categoria*',
-                  dica: 'Comida / Bebida / Sobremesa',
+                  titulo: 'Apelido',
+                  dica: 'Digite o apelido',
                   validador: Validadores.validaObrigatorio,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 16.0),
-                  child: TextFormField(
-                    autofocus: true,
-                    maxLines: 2,
-                    controller: _controladorFoto,
-                    style: TextStyle(fontSize: 18, color: Colors.red),
-                    decoration: InputDecoration(
-                      labelText: 'Imagem do prato',
-                      labelStyle: TextStyle(fontSize: 18, color: Colors.red),
-                      hintText: 'Insira o link da sua imagem na internet',
-                      hintStyle: TextStyle(color: Colors.red[100]),
-                    ),
-                  ),
                 ),
                 Botao(
                     titulo:
@@ -112,7 +96,7 @@ class _CadastroContatoState extends State<CadastroContato> {
     if (_formkey.currentState.validate()) {
       Contato contato = Contato(
         apelido: apelido,
-        foto: foto,
+        foto: null,
         nome: nome,
         telefone: telefone,
       );
@@ -123,6 +107,7 @@ class _CadastroContatoState extends State<CadastroContato> {
         'telefone': contato.telefone,
         'apelido': contato.apelido
       });
+      Navigator.pop(context);
     } else {
       /* ShowDialog.showMyDialog(
           context, 'Dados faltando', 'Complete todo o cadastro', '',
