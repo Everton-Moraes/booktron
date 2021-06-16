@@ -73,3 +73,94 @@ class Botao extends StatelessWidget {
     );
   }
 }
+
+class ShowDialog {
+  static Future<void> showMyDialogSimNao(
+      BuildContext context, String titulo, String texto1,
+      {Function onClick}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(titulo),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    texto1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                "Não",
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+                child: Text(
+                  "Sim",
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  onClick();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<void> showMyDialogOk(
+      BuildContext context, String titulo, String texto1,
+      {Function onClick}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(titulo),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    texto1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              width: double.maxFinite,
+              child: Botao(
+                titulo: 'OK',
+                onClick: () {
+                  onClick();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

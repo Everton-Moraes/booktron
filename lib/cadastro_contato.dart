@@ -1,5 +1,6 @@
 import 'package:booktron/components.dart';
 import 'package:booktron/contato.dart';
+import 'package:booktron/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
@@ -45,6 +46,16 @@ class _CadastroContatoState extends State<CadastroContato> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Contatos'),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.delete_forever,
+                color: Colors.red,
+              ),
+              onPressed: () => ShowDialog.showMyDialogSimNao(
+                  context, "Excluir", "Excluir Contato?",
+                  onClick: () => _deletaMesa(context)))
+        ],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -107,6 +118,12 @@ class _CadastroContatoState extends State<CadastroContato> {
           'telefone': contato.telefone,
           'apelido': contato.apelido
         });
+        ShowDialog.showMyDialogOk(
+            context, 'Cadastrado', 'Cadastrado com Sucesso',
+            onClick: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+                (route) => false));
       } else {
         db.collection('contatos').doc(widget.contato.idContato).update({
           'foto': contato.foto,
@@ -114,12 +131,23 @@ class _CadastroContatoState extends State<CadastroContato> {
           'telefone': contato.telefone,
           'apelido': contato.apelido
         });
+        ShowDialog.showMyDialogOk(
+            context, 'Atualizado', 'Atualizado com Sucesso',
+            onClick: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => Home()),
+                (route) => false));
       }
-      Navigator.pop(context);
     } else {
-      /* ShowDialog.showMyDialog(
-          context, 'Dados faltando', 'Complete todo o cadastro', '',
-          onClick: () => Navigator.pop(context)); */
+      ShowDialog.showMyDialogOk(
+          context, 'Dados faltando', 'Complete todo o cadastro',
+          onClick: () => Navigator.pop(context));
     }
+  }
+
+  void _deletaMesa(BuildContext context) {
+    db.collection('contatos').doc(widget.contato.idContato).delete();
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => Home()), (route) => false);
   }
 }

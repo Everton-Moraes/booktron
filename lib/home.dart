@@ -11,6 +11,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Contato> contatos;
+  List<Contato> contatosBuscados;
+  bool _exibePesquisa = true;
+
   var db = FirebaseFirestore.instance;
 
   StreamSubscription<QuerySnapshot> contatoInscricao;
@@ -26,12 +29,12 @@ class _HomeState extends State<Home> {
         .orderBy('apelido', descending: false)
         .snapshots()
         .listen((snapshot) {
-      final List<Contato> contatos = snapshot.docs
+      contatosBuscados = snapshot.docs
           .map((documentSnapshot) =>
               Contato.fromJson(documentSnapshot.data(), documentSnapshot.id))
           .toList();
       setState(() {
-        this.contatos = contatos;
+        this.contatos = contatosBuscados;
       });
     });
   }
@@ -46,7 +49,31 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Criar um pesquisar'),
+        title: _exibePesquisa
+            ? Text('BookTron')
+            : TextField(
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                onChanged: (value) => _filtroPesquisa(value),
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    hintText: "|",
+                    hintStyle: TextStyle(color: Colors.white)),
+              ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(_exibePesquisa ? Icons.search : Icons.close),
+            onPressed: () {
+              setState(() {
+                _exibePesquisa = !_exibePesquisa;
+                _filtroPesquisa("");
+              });
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: getListaContatos(),
@@ -59,9 +86,8 @@ class _HomeState extends State<Home> {
               );
             default:
               List<DocumentSnapshot> documentos = snapshot.data.docs;
-              print('AQUI ESTÀ DOC: ${documentos.length}');
               return ListView.builder(
-                itemCount: documentos.length,
+                itemCount: contatos.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -122,5 +148,21 @@ class _HomeState extends State<Home> {
         .collection('contatos')
         .orderBy('apelido', descending: false)
         .snapshots();
+  }
+
+  void _filtroPesquisa(String value) {
+    List<Contato> resultado = [];
+
+    if (value.isEmpty) {
+      resultado = contatosBuscados;
+    } else {
+      resultado = contatosBuscados
+          .where((elemento) =>
+              elemento.apelido.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      this.contatos = resultado;
+    });
   }
 }
