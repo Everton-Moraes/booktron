@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:booktron/cadastro_contato.dart';
 import 'package:booktron/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -75,86 +76,94 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: getListaContatos(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            default:
-              if (contatos.isNotEmpty) {
-                return ListView.builder(
-                  itemCount: contatos.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CadastroContato(
-                                      contato: contatos[index],
-                                    ))),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(contatos[index].apelido,
-                                      style: TextStyle(fontSize: 18.0)),
-                                  Container(
-                                    child: Row(
-                                      children: [
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.phone_enabled,
-                                              color: Colors.green[800],
-                                            ),
-                                            onPressed: () {}),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.sms,
-                                              color: Colors.blue[800],
-                                            ),
-                                            onPressed: () {}),
-                                        InkWell(
-                                            child: SizedBox(
-                                              width: 50,
-                                              child: Image.asset(
-                                                  'assets/whatsapp.png',
-                                                  width: 28,
-                                                  height: 28),
-                                            ),
-                                            onTap: () {})
-                                      ],
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/fundo.jpg'), fit: BoxFit.cover)),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: getListaContatos(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              default:
+                if (contatos.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: contatos.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CadastroContato(
+                                        contato: contatos[index],
+                                      ))),
+                          child: Card(
+                            color: Colors.cyan[200],
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(contatos[index].apelido,
+                                        style: TextStyle(fontSize: 22.0)),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.phone_enabled,
+                                                color: Colors.green,
+                                                size: 30.0,
+                                              ),
+                                              onPressed: () {}),
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.sms,
+                                                color: Colors.blue[800],
+                                                size: 30,
+                                              ),
+                                              onPressed: () {}),
+                                          InkWell(
+                                              child: SizedBox(
+                                                width: 50,
+                                                child: Image.asset(
+                                                    'assets/whatsapp.png',
+                                                    width: 30,
+                                                    height: 30),
+                                              ),
+                                              onTap: () {})
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return Container(
-                    height: 380,
-                    child: Center(
-                        child: Text(
-                      'Lista Vazia',
-                      style: TextStyle(fontSize: 24),
-                    )));
-              }
-          }
-        },
+                      );
+                    },
+                  );
+                } else {
+                  return Container(
+                      height: 380,
+                      child: Center(
+                          child: Text(
+                        'Lista Vazia',
+                        style: TextStyle(fontSize: 24),
+                      )));
+                }
+            }
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
