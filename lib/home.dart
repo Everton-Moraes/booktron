@@ -33,9 +33,7 @@ class _HomeState extends State<Home> {
           .map((documentSnapshot) =>
               Contato.fromJson(documentSnapshot.data(), documentSnapshot.id))
           .toList();
-      setState(() {
-        this.contatos = contatosBuscados;
-      });
+      _filtroPesquisa("");
     });
   }
 
@@ -52,6 +50,8 @@ class _HomeState extends State<Home> {
         title: _exibePesquisa
             ? Text('BookTron')
             : TextField(
+                autofocus: true,
+                cursorColor: Colors.white,
                 style: TextStyle(color: Colors.white, fontSize: 18),
                 onChanged: (value) => _filtroPesquisa(value),
                 decoration: InputDecoration(
@@ -60,8 +60,8 @@ class _HomeState extends State<Home> {
                       Icons.search,
                       color: Colors.white,
                     ),
-                    hintText: "|",
-                    hintStyle: TextStyle(color: Colors.white)),
+                    hintText: "Pesquisar...",
+                    hintStyle: TextStyle(color: Colors.blueGrey[100])),
               ),
         actions: <Widget>[
           IconButton(
@@ -85,7 +85,6 @@ class _HomeState extends State<Home> {
                 child: CircularProgressIndicator(),
               );
             default:
-              print('NUM ------> ${contatos.length}');
               if (contatos.isNotEmpty) {
                 return ListView.builder(
                   itemCount: contatos.length,
@@ -113,14 +112,26 @@ class _HomeState extends State<Home> {
                                     child: Row(
                                       children: [
                                         IconButton(
-                                            icon: Icon(Icons.phone_android),
+                                            icon: Icon(
+                                              Icons.phone_enabled,
+                                              color: Colors.green[800],
+                                            ),
                                             onPressed: () {}),
                                         IconButton(
-                                            icon: Icon(Icons.phone_android),
+                                            icon: Icon(
+                                              Icons.sms,
+                                              color: Colors.blue[800],
+                                            ),
                                             onPressed: () {}),
-                                        IconButton(
-                                            icon: Icon(Icons.phone_android),
-                                            onPressed: () {}),
+                                        InkWell(
+                                            child: SizedBox(
+                                              width: 50,
+                                              child: Image.asset(
+                                                  'assets/whatsapp.png',
+                                                  width: 28,
+                                                  height: 28),
+                                            ),
+                                            onTap: () {})
                                       ],
                                     ),
                                   ),
