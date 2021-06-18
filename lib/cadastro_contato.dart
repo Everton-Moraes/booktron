@@ -47,23 +47,34 @@ class _CadastroContatoState extends State<CadastroContato> {
       appBar: AppBar(
         title: Text('Contatos'),
         actions: [
-          IconButton(
-              icon: Icon(
-                Icons.delete_forever,
-                color: Colors.red,
-              ),
-              onPressed: () => ShowDialog.showMyDialogSimNao(
-                  context, "Excluir", "Excluir Contato?",
-                  onClick: () => _deletaMesa(context)))
+          widget.contato != null
+              ? IconButton(
+                  icon: Icon(
+                    Icons.delete_forever,
+                    color: Colors.red,
+                  ),
+                  onPressed: () => ShowDialog.showMyDialogSimNao(
+                      context, "Excluir", "Excluir Contato?",
+                      onClick: () => _deletaContato(context)))
+              : Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    Icons.delete_forever,
+                    color: Colors.grey,
+                  ),
+                ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/fundo.jpg'), fit: BoxFit.cover)),
         child: Form(
           key: _formkey,
           child: Padding(
             padding:
                 const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0),
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 InputText(
                   controlador: _controladorNome,
@@ -84,12 +95,15 @@ class _CadastroContatoState extends State<CadastroContato> {
                   dica: 'Digite o apelido',
                   validador: Validadores.validaObrigatorio,
                 ),
-                Botao(
-                    titulo:
-                        (widget.contato != null) ? 'Atualizar' : 'Cadastrar',
-                    onClick: () {
-                      _cadastrar();
-                    })
+                Padding(
+                  padding: const EdgeInsets.all(36.0),
+                  child: Botao(
+                      titulo:
+                          (widget.contato != null) ? 'Atualizar' : 'Cadastrar',
+                      onClick: () {
+                        _cadastrar();
+                      }),
+                )
               ],
             ),
           ),
@@ -145,7 +159,7 @@ class _CadastroContatoState extends State<CadastroContato> {
     }
   }
 
-  void _deletaMesa(BuildContext context) {
+  void _deletaContato(BuildContext context) {
     db.collection('contatos').doc(widget.contato.idContato).delete();
     Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (context) => Home()), (route) => false);
