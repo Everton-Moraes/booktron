@@ -25,12 +25,12 @@ class InputText extends StatelessWidget {
         controller: controlador,
         keyboardType:
             numerico != null ? TextInputType.number : TextInputType.text,
-        style: TextStyle(fontSize: 18, color: Colors.blue),
+        style: TextStyle(fontSize: 18, color: Colors.white),
         decoration: InputDecoration(
           labelText: titulo,
-          labelStyle: TextStyle(fontSize: 18, color: Colors.blue),
+          labelStyle: TextStyle(fontSize: 18, color: Colors.white),
           hintText: dica,
-          hintStyle: TextStyle(color: Colors.blue[100]),
+          hintStyle: TextStyle(color: Colors.white),
         ),
       ),
     );

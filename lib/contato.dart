@@ -4,6 +4,7 @@ class Contato {
   String nome;
   String telefone;
   String apelido;
+  bool favorito;
 
   Contato({this.foto, this.nome, this.telefone, this.apelido});
 
@@ -13,6 +14,7 @@ class Contato {
     nome = json['nome'];
     telefone = json['telefone'];
     apelido = json['apelido'];
+    favorito = json['favorito'];
   }
 
   Map<String, dynamic> toJson() {
@@ -22,6 +24,7 @@ class Contato {
     data['nome'] = this.nome;
     data['telefone'] = this.telefone;
     data['apelido'] = this.apelido;
+    data['favorito'] = this.favorito;
     return data;
   }
 }
