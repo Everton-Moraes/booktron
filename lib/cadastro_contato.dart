@@ -1,9 +1,16 @@
+//import 'dart:html';
+import 'dart:io';
+
 import 'package:booktron/components.dart';
 import 'package:booktron/contato.dart';
 import 'package:booktron/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 class CadastroContato extends StatefulWidget {
   final Contato contato;
@@ -22,22 +29,64 @@ class _CadastroContatoState extends State<CadastroContato> {
   TextEditingController _controladorNome;
   TextEditingController _controladorTelefone;
   TextEditingController _controladorApelido;
-  TextEditingController _controladorFoto;
+
+  File _image;
+  var _url = "";
+  String _nomeFoto;
+  var gambiarra;
+
+  Future retornaFoto() async {
+    final Reference ref =
+        FirebaseStorage.instance.ref().child(widget.contato.foto);
+    print(widget.contato.foto);
+    print("teste");
+    if (widget.contato.foto != null) {
+      var url = await ref.getDownloadURL();
+      setState(() {
+        _url = url.toString();
+      });
+    } else {
+      setState(() {
+        _url =
+            "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
+      });
+    }
+  }
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _image = image;
+    });
+  }
+
+  Future uploadPic(BuildContext context) async {
+    String fileName = basename(_image.path);
+    Reference ref = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = ref.putFile(_image);
+    gambiarra = uploadTask;
+    setState(() {
+      _nomeFoto = fileName;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     if (widget.contato != null) {
+      retornaFoto();
       _controladorNome = TextEditingController(text: widget.contato.nome);
       _controladorTelefone = MaskedTextController(
           mask: '(00) 00000-0000', text: widget.contato.telefone);
       _controladorApelido = TextEditingController(text: widget.contato.apelido);
-      _controladorFoto = TextEditingController(text: widget.contato.foto);
     } else {
       _controladorNome = TextEditingController();
       _controladorTelefone = MaskedTextController(mask: '(00) 00000-0000');
       _controladorApelido = TextEditingController();
-      _controladorFoto = TextEditingController();
+      setState(() {
+        _url =
+            "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
+      });
     }
   }
 
@@ -76,6 +125,45 @@ class _CadastroContatoState extends State<CadastroContato> {
                 const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0),
             child: ListView(
               children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Color(0xff476cfb),
+                        child: ClipOval(
+                          child: SizedBox(
+                            width: 180.0,
+                            height: 180.0,
+                            child: (_image != null)
+                                ? Image.file(
+                                    _image,
+                                    fit: BoxFit.fill,
+                                  )
+                                : Image.network(
+                                    _url,
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 60.0),
+                      child: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.camera,
+                          size: 30.0,
+                        ),
+                        onPressed: () {
+                          getImage();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 InputText(
                   controlador: _controladorNome,
                   titulo: 'Nome',
@@ -101,7 +189,8 @@ class _CadastroContatoState extends State<CadastroContato> {
                       titulo:
                           (widget.contato != null) ? 'Atualizar' : 'Cadastrar',
                       onClick: () {
-                        _cadastrar();
+                        uploadPic(context);
+                        _cadastrar(context);
                       }),
                 )
               ],
@@ -112,16 +201,16 @@ class _CadastroContatoState extends State<CadastroContato> {
     );
   }
 
-  void _cadastrar() {
+  void _cadastrar(BuildContext context) {
     final String nome = _controladorNome.text;
     final String telefone = _controladorTelefone.text;
     final String apelido = _controladorApelido.text;
-    final String foto = _controladorFoto.text;
+    final String foto = _nomeFoto;
 
     if (_formkey.currentState.validate()) {
       Contato contato = Contato(
         apelido: apelido,
-        foto: null,
+        foto: foto,
         nome: nome,
         telefone: telefone,
       );
@@ -130,7 +219,8 @@ class _CadastroContatoState extends State<CadastroContato> {
           'foto': contato.foto,
           'nome': contato.nome,
           'telefone': contato.telefone,
-          'apelido': contato.apelido
+          'apelido': contato.apelido,
+          'favorito': false
         });
         ShowDialog.showMyDialogOk(
             context, 'Cadastrado', 'Cadastrado com Sucesso',

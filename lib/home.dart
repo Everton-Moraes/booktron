@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:booktron/cadastro_contato.dart';
 import 'package:booktron/contato.dart';
 import 'package:booktron/favoritos.dart';
@@ -7,6 +6,9 @@ import 'package:booktron/historico_ligacao.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,15 +19,32 @@ class _HomeState extends State<Home> {
   List<Contato> contatos;
   List<Contato> contatosBuscados;
   bool _exibePesquisa = true;
-
+  var _url =
+      "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
+  String _nomeFoto;
   var db = FirebaseFirestore.instance;
-
   StreamSubscription<QuerySnapshot> contatoInscricao;
+
+  /* Future retornaFoto(List<Contato> contato) async {
+    final Reference ref = FirebaseStorage.instance.ref().child(contato.foto);
+    if (contato[index].foto != null) {
+      var url = await ref.getDownloadURL();
+      setState(() {
+        _url = url.toString();
+      });
+    } else {
+      setState(() {
+        _url =
+            "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
+      });
+    }
+  } */
 
   @override
   void initState() {
     super.initState();
     contatos = [];
+    /* retornaFoto(contatos); */
     contatoInscricao?.cancel();
 
     contatoInscricao = db
@@ -141,6 +160,23 @@ class _HomeState extends State<Home> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Color(0xff476cfb),
+                                        child: ClipOval(
+                                          child: SizedBox(
+                                            width: 180.0,
+                                            height: 180.0,
+                                            child: Image.network(
+                                              contatos[index].foto,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Text(contatos[index].apelido,
                                         style: TextStyle(fontSize: 22.0)),
                                     Container(
@@ -171,19 +207,9 @@ class _HomeState extends State<Home> {
                                                 size: 30.0,
                                               ),
                                               onPressed: () {
-                                                _gravarHistorico(
-                                                    contatos[index],
-                                                    'telefone');
-                                              }),
-                                          IconButton(
-                                              icon: Icon(
-                                                Icons.sms,
-                                                color: Colors.blue[800],
-                                                size: 30,
-                                              ),
-                                              onPressed: () {
-                                                _gravarHistorico(
-                                                    contatos[index], 'sms');
+                                                _efetuarLigacao(
+                                                  contatos[index],
+                                                );
                                               }),
                                           InkWell(
                                               child: SizedBox(
@@ -194,9 +220,8 @@ class _HomeState extends State<Home> {
                                                     height: 30),
                                               ),
                                               onTap: () {
-                                                _gravarHistorico(
-                                                    contatos[index],
-                                                    'whatsapp');
+                                                _mandarWhatsapp(
+                                                    contatos[index]);
                                               })
                                         ],
                                       ),
@@ -272,5 +297,14 @@ class _HomeState extends State<Home> {
       'data': data,
       'servico': servico
     });
+  }
+
+  void _mandarWhatsapp(Contato contato) {
+    FlutterOpenWhatsapp.sendSingleMessage("+55" + contato.telefone, "Hello");
+  }
+
+  void _efetuarLigacao(Contato contato) async {
+    var number = contato.telefone; //set the number here
+    bool res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 }
