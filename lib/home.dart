@@ -163,7 +163,7 @@ class _HomeState extends State<Home> {
                                     Align(
                                       alignment: Alignment.bottomLeft,
                                       child: CircleAvatar(
-                                        radius: 20,
+                                        radius: 30,
                                         backgroundColor: Color(0xff476cfb),
                                         child: ClipOval(
                                           child: SizedBox(

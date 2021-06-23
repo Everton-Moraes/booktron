@@ -34,16 +34,18 @@ class _CadastroContatoState extends State<CadastroContato> {
   var _url = "";
   String _nomeFoto;
   var gambiarra;
+  String _nomeURL;
+  var imageUrl;
 
   Future retornaFoto() async {
     final Reference ref =
         FirebaseStorage.instance.ref().child(widget.contato.foto);
-    print(widget.contato.foto);
-    print("teste");
+
     if (widget.contato.foto != null) {
-      var url = await ref.getDownloadURL();
+      print("berimbau");
+      print(widget.contato.foto);
       setState(() {
-        _url = url.toString();
+        _url = widget.contato.foto;
       });
     } else {
       setState(() {
@@ -61,13 +63,18 @@ class _CadastroContatoState extends State<CadastroContato> {
   }
 
   Future uploadPic(BuildContext context) async {
-    String fileName = basename(_image.path);
-    Reference ref = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = ref.putFile(_image);
-    gambiarra = uploadTask;
-    setState(() {
-      _nomeFoto = fileName;
-    });
+    if (_image != null) {
+      String fileName = basename(_image.path);
+      Reference ref = FirebaseStorage.instance.ref().child(fileName);
+      UploadTask uploadTask = ref.putFile(_image);
+      imageUrl = await (await uploadTask).ref.getDownloadURL();
+      setState(() {
+        _nomeFoto = imageUrl;
+        _cadastrar(context);
+      });
+    } else {
+      _cadastrar(context);
+    }
   }
 
   @override
@@ -190,7 +197,6 @@ class _CadastroContatoState extends State<CadastroContato> {
                           (widget.contato != null) ? 'Atualizar' : 'Cadastrar',
                       onClick: () {
                         uploadPic(context);
-                        _cadastrar(context);
                       }),
                 )
               ],
@@ -205,8 +211,16 @@ class _CadastroContatoState extends State<CadastroContato> {
     final String nome = _controladorNome.text;
     final String telefone = _controladorTelefone.text;
     final String apelido = _controladorApelido.text;
-    final String foto = _nomeFoto;
+    String foto = "";
+    if (imageUrl != null) {
+      foto = imageUrl;
+    } else {
+      foto =
+          "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
+    }
 
+    print("maoe");
+    print(foto);
     if (_formkey.currentState.validate()) {
       Contato contato = Contato(
         apelido: apelido,
