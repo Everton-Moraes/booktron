@@ -11,6 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
+import 'package:flutter_initicon/flutter_initicon.dart';
 
 class CadastroContato extends StatefulWidget {
   final Contato contato;
@@ -31,18 +32,19 @@ class _CadastroContatoState extends State<CadastroContato> {
   TextEditingController _controladorApelido;
 
   File _image;
+  bool _semFoto;
+  bool _novoContato;
   var _url = "";
   String _nomeFoto;
   var gambiarra;
-  String _nomeURL;
   var imageUrl;
+  var _nome;
 
   Future retornaFoto() async {
     final Reference ref =
         FirebaseStorage.instance.ref().child(widget.contato.foto);
 
     if (widget.contato.foto != null) {
-      print("berimbau");
       print(widget.contato.foto);
       setState(() {
         _url = widget.contato.foto;
@@ -86,7 +88,15 @@ class _CadastroContatoState extends State<CadastroContato> {
       _controladorTelefone = MaskedTextController(
           mask: '(00) 00000-0000', text: widget.contato.telefone);
       _controladorApelido = TextEditingController(text: widget.contato.apelido);
+      if (widget.contato.foto ==
+          "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg") {
+        _nome = widget.contato.apelido;
+        _novoContato = false;
+        _semFoto = true;
+      }
     } else {
+      _novoContato = true;
+      _nome = "";
       _controladorNome = TextEditingController();
       _controladorTelefone = MaskedTextController(mask: '(00) 00000-0000');
       _controladorApelido = TextEditingController();
@@ -149,10 +159,20 @@ class _CadastroContatoState extends State<CadastroContato> {
                                     _image,
                                     fit: BoxFit.fill,
                                   )
-                                : Image.network(
-                                    _url,
-                                    fit: BoxFit.fill,
-                                  ),
+                                : (_novoContato == true)
+                                    ? Image.network(
+                                        "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg",
+                                        fit: BoxFit.fill,
+                                      )
+                                    : (_semFoto == true)
+                                        ? Initicon(
+                                            text: "${_nome}",
+                                            backgroundColor: Colors.blue,
+                                            size: 200)
+                                        : Image.network(
+                                            _url,
+                                            fit: BoxFit.fill,
+                                          ),
                           ),
                         ),
                       ),

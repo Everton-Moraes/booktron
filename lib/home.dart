@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_initicon/flutter_initicon.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,26 +19,9 @@ class _HomeState extends State<Home> {
   List<Contato> contatos;
   List<Contato> contatosBuscados;
   bool _exibePesquisa = true;
-  var _url =
-      "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
-  String _nomeFoto;
+
   var db = FirebaseFirestore.instance;
   StreamSubscription<QuerySnapshot> contatoInscricao;
-
-  /* Future retornaFoto(List<Contato> contato) async {
-    final Reference ref = FirebaseStorage.instance.ref().child(contato.foto);
-    if (contato[index].foto != null) {
-      var url = await ref.getDownloadURL();
-      setState(() {
-        _url = url.toString();
-      });
-    } else {
-      setState(() {
-        _url =
-            "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
-      });
-    }
-  } */
 
   @override
   void initState() {
@@ -169,10 +152,16 @@ class _HomeState extends State<Home> {
                                           child: SizedBox(
                                             width: 180.0,
                                             height: 180.0,
-                                            child: Image.network(
-                                              contatos[index].foto,
-                                              fit: BoxFit.fill,
-                                            ),
+                                            child: (contatos[index].foto ==
+                                                    "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg")
+                                                ? Initicon(
+                                                    text:
+                                                        "${contatos[index].apelido}",
+                                                  )
+                                                : Image.network(
+                                                    contatos[index].foto,
+                                                    fit: BoxFit.fill,
+                                                  ),
                                           ),
                                         ),
                                       ),
@@ -304,7 +293,8 @@ class _HomeState extends State<Home> {
   }
 
   void _efetuarLigacao(Contato contato) async {
+    bool res;
     var number = contato.telefone; //set the number here
-    bool res = await FlutterPhoneDirectCaller.callNumber(number);
+    res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 }
