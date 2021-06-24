@@ -163,4 +163,51 @@ class ShowDialog {
       },
     );
   }
+
+  static Future<void> showDialogFoto(
+      BuildContext context, String titulo, String texto1,
+      {Function onClick}) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(titulo),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    texto1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                "Câmera",
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+                child: Text(
+                  "Galeria",
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  onClick();
+                }),
+          ],
+        );
+      },
+    );
+  }
 }

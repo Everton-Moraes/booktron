@@ -43,7 +43,6 @@ class _CadastroContatoState extends State<CadastroContato> {
   Future retornaFoto() async {
     final Reference ref =
         FirebaseStorage.instance.ref().child(widget.contato.foto);
-
     if (widget.contato.foto != null) {
       print(widget.contato.foto);
       setState(() {
@@ -57,8 +56,13 @@ class _CadastroContatoState extends State<CadastroContato> {
     }
   }
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Future getImage(String fonte) async {
+    var image;
+    if (fonte == "g") {
+      image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    } else {
+      image = await ImagePicker.pickImage(source: ImageSource.camera);
+    }
     setState(() {
       _image = image;
     });
@@ -178,17 +182,16 @@ class _CadastroContatoState extends State<CadastroContato> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 60.0),
-                      child: IconButton(
-                        icon: Icon(
-                          FontAwesomeIcons.camera,
-                          size: 30.0,
-                        ),
-                        onPressed: () {
-                          getImage();
-                        },
-                      ),
-                    ),
+                        padding: EdgeInsets.only(top: 60.0),
+                        child: IconButton(
+                            icon: Icon(
+                              FontAwesomeIcons.camera,
+                              size: 30.0,
+                            ),
+                            onPressed: () => showDialogFoto(
+                                context,
+                                "Escolher Fonte",
+                                "Escolher câmera ou Galeria?"))),
                   ],
                 ),
                 InputText(
@@ -238,9 +241,6 @@ class _CadastroContatoState extends State<CadastroContato> {
       foto =
           "https://caruarucity.com.br/wp-content/uploads/2016/12/avatar-vazio.jpg";
     }
-
-    print("maoe");
-    print(foto);
     if (_formkey.currentState.validate()) {
       Contato contato = Contato(
         apelido: apelido,
@@ -267,7 +267,7 @@ class _CadastroContatoState extends State<CadastroContato> {
           'foto': contato.foto,
           'nome': contato.nome,
           'telefone': contato.telefone,
-          'apelido': contato.apelido
+          'apelido': contato.apelido,
         });
         ShowDialog.showMyDialogOk(
             context, 'Atualizado', 'Atualizado com Sucesso',
@@ -287,5 +287,60 @@ class _CadastroContatoState extends State<CadastroContato> {
     db.collection('contatos').doc(widget.contato.idContato).delete();
     Navigator.pushAndRemoveUntil(context,
         MaterialPageRoute(builder: (context) => Home()), (route) => false);
+  }
+
+  Future<void> showDialogFoto(
+      BuildContext context, String titulo, String texto1) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(titulo),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    texto1,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Center(
+              child: TextButton(
+                  child: Text(
+                    "Câmera",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    var ft = "c";
+                    getImage(ft);
+                    Navigator.pop(context);
+                  }),
+            ),
+            Center(
+              child: TextButton(
+                  child: Text(
+                    "Galeria",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    //var ft = "g";
+                    getImage("g");
+                    Navigator.pop(context);
+                  }),
+            )
+          ],
+        );
+      },
+    );
   }
 }

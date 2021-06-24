@@ -25,6 +25,7 @@ class Contato {
     data['telefone'] = this.telefone;
     data['apelido'] = this.apelido;
     data['favorito'] = this.favorito;
+
     return data;
   }
 }
