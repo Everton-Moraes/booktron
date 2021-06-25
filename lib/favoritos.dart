@@ -4,6 +4,9 @@ import 'package:booktron/cadastro_contato.dart';
 import 'package:booktron/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:intl/intl.dart';
 
 class Favoritos extends StatefulWidget {
   @override
@@ -116,14 +119,14 @@ class _FavoritosState extends State<Favoritos> {
                                                 color: Colors.green,
                                                 size: 30.0,
                                               ),
-                                              onPressed: () {}),
-                                          IconButton(
-                                              icon: Icon(
-                                                Icons.sms,
-                                                color: Colors.blue[800],
-                                                size: 30,
-                                              ),
-                                              onPressed: () {}),
+                                              onPressed: () {
+                                                _efetuarLigacao(
+                                                  contatos[index],
+                                                );
+                                                _gravarHistorico(
+                                                    contatos[index],
+                                                    'telefone');
+                                              }),
                                           InkWell(
                                               child: SizedBox(
                                                 width: 50,
@@ -132,7 +135,13 @@ class _FavoritosState extends State<Favoritos> {
                                                     width: 30,
                                                     height: 30),
                                               ),
-                                              onTap: () {})
+                                              onTap: () {
+                                                _mandarWhatsapp(
+                                                    contatos[index]);
+                                                _gravarHistorico(
+                                                    contatos[index],
+                                                    'whatsapp');
+                                              })
                                         ],
                                       ),
                                     ),
@@ -177,5 +186,28 @@ class _FavoritosState extends State<Favoritos> {
     setState(() {
       this.contatos.removeAt(index);
     });
+  }
+
+  void _gravarHistorico(Contato contato, String servico) {
+    final now = DateTime.now();
+    String data = DateFormat('kk:mm - dd/MM/yyyy').format(now);
+
+    db.collection('historicos').add({
+      'nome': contato.nome,
+      'apelido': contato.apelido,
+      'data': data,
+      'servico': servico,
+      'timer': DateTime.now()
+    });
+  }
+
+  void _mandarWhatsapp(Contato contato) {
+    FlutterOpenWhatsapp.sendSingleMessage("+55" + contato.telefone, "Hello");
+  }
+
+  void _efetuarLigacao(Contato contato) async {
+    bool res;
+    var number = contato.telefone; //set the number here
+    res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 }

@@ -63,6 +63,7 @@ class _CadastroContatoState extends State<CadastroContato> {
     } else {
       image = await ImagePicker.pickImage(source: ImageSource.camera);
     }
+
     setState(() {
       _image = image;
     });
@@ -170,7 +171,7 @@ class _CadastroContatoState extends State<CadastroContato> {
                                       )
                                     : (_semFoto == true)
                                         ? Initicon(
-                                            text: "${_nome}",
+                                            text: "$_nome",
                                             backgroundColor: Colors.blue,
                                             size: 200)
                                         : Image.network(
