@@ -21,11 +21,11 @@ class _SplashState extends State<Splash> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Container(
-          height: 380,
-          width: double.infinity,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/fundo.jpg'), fit: BoxFit.cover)),
           child: Stack(
             children: <Widget>[
               Center(

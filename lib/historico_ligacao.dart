@@ -24,7 +24,7 @@ class _HistoricoLigacaoState extends State<HistoricoLigacao> {
 
     favoritoInscricao = db
         .collection('historicos')
-        .orderBy('data', descending: true)
+        .orderBy('timer', descending: true)
         .snapshots()
         .listen((snapshot) {
       final List<Historico> historico = snapshot.docs
@@ -126,7 +126,7 @@ class _HistoricoLigacaoState extends State<HistoricoLigacao> {
   Stream<QuerySnapshot> getListaFavoritos() {
     return db
         .collection('historicos')
-        .orderBy('data', descending: true)
+        .orderBy('timer', descending: true)
         .snapshots();
   }
 

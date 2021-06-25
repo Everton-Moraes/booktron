@@ -230,7 +230,7 @@ class _CadastroContatoState extends State<CadastroContato> {
     );
   }
 
-  void _cadastrar(BuildContext context) {
+  void _cadastrar(BuildContext context) async {
     final String nome = _controladorNome.text;
     final String telefone = _controladorTelefone.text;
     final String apelido = _controladorApelido.text;
@@ -249,19 +249,29 @@ class _CadastroContatoState extends State<CadastroContato> {
         telefone: telefone,
       );
       if (widget.contato == null) {
-        db.collection('contatos').add({
-          'foto': contato.foto,
-          'nome': contato.nome,
-          'telefone': contato.telefone,
-          'apelido': contato.apelido,
-          'favorito': false
-        });
-        ShowDialog.showMyDialogOk(
-            context, 'Cadastrado', 'Cadastrado com Sucesso',
-            onClick: () => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => Home()),
-                (route) => false));
+        QuerySnapshot consultaCadastro = await db
+            .collection('contatos')
+            .where('telefone', isEqualTo: telefone)
+            .get();
+
+        if (consultaCadastro.docs.isEmpty) {
+          db.collection('contatos').add({
+            'foto': contato.foto,
+            'nome': contato.nome,
+            'telefone': contato.telefone,
+            'apelido': contato.apelido,
+            'favorito': false
+          });
+          ShowDialog.showMyDialogOk(
+              context, 'Cadastrado', 'Cadastrado com Sucesso',
+              onClick: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home()),
+                  (route) => false));
+        } else {
+          ShowDialog.showMyDialogOk(context, 'Existente', 'Conta já cadastrado',
+              onClick: () => Navigator.pop(context));
+        }
       } else {
         db.collection('contatos').doc(widget.contato.idContato).update({
           'foto': contato.foto,

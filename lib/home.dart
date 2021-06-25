@@ -84,6 +84,9 @@ class _HomeState extends State<Home> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
+            DrawerHeader(
+              child: Image.asset('assets/logo.png', height: 200, width: 200),
+            ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
@@ -199,6 +202,9 @@ class _HomeState extends State<Home> {
                                                 _efetuarLigacao(
                                                   contatos[index],
                                                 );
+                                                _gravarHistorico(
+                                                    contatos[index],
+                                                    'telefone');
                                               }),
                                           InkWell(
                                               child: SizedBox(
@@ -211,6 +217,9 @@ class _HomeState extends State<Home> {
                                               onTap: () {
                                                 _mandarWhatsapp(
                                                     contatos[index]);
+                                                _gravarHistorico(
+                                                    contatos[index],
+                                                    'whatsapp');
                                               })
                                         ],
                                       ),
@@ -284,7 +293,8 @@ class _HomeState extends State<Home> {
       'nome': contato.nome,
       'apelido': contato.apelido,
       'data': data,
-      'servico': servico
+      'servico': servico,
+      'timer': DateTime.now()
     });
   }
 
