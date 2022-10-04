@@ -129,7 +129,8 @@ class _HistoricoLigacaoState extends State<HistoricoLigacao> {
         .orderBy('timer', descending: true)
         .snapshots();
   }
-//esta função serve para limpar o histórico de ligações
+//Excluir o histórico
+//esta função serve para Excluir o histórico de ligações
   void _limpaHistorico(List<Historico> historicos) {
     for (var historico in historicos) {
       db.collection('historicos').doc(historico.idHistorico).delete();
